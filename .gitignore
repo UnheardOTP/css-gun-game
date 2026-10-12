@@ -1,0 +1,4 @@
+.env
+maps/*.bsp
+maps/*.bz2
+fastdl/maps/

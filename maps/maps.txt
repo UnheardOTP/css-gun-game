@@ -1,0 +1,39 @@
+# Maps downloaded into ./maps on container start (only ones that aren't there yet).
+#
+#   <mapname>                 fetched from MAPS_BASE_URL (default https://main.fastdl.me/maps/<mapname>.bsp.bz2)
+#   <mapname> <direct-url>    fetched from that URL (.bsp or .bsp.bz2)
+#
+# Comment a line out to stop using a map; delete its file from ./maps to remove it.
+# You can also just drop any .bsp / .bsp.bz2 into ./maps - no entry needed here.
+# The trailing number is the GameBanana mod id (https://gamebanana.com/mods/<id>) - map credits live there.
+#
+# Selection criteria: valid VBSP, >=15 spawns per team (except where noted), small download, no map-specific plugins needed.
+# I could not playtest them; prune with a # if one plays badly on your server.
+
+
+# ---- Gun game maps (gg_) - big spawn counts, small downloads ----
+gg_sandstorm             # 6901KB, gb 136415
+gg_dust2                 # 2002KB, gb 134622
+gg_snow                  # 484KB, gb 135022
+gg_bunker                # 1238KB, gb 134025
+gg_apollo                # 3398KB, gb 133687
+gg_underpass             # 3807KB, gb 137260
+gg_temple                # 2490KB, gb 136940
+gg_lego                  # 4323KB, gb 135545
+gg_office                # 5110KB, gb 133308
+gg_crossfire             # 3623KB, gb 134306
+gg_tunnel                # 2133KB, gb 137208
+gg_trainstation          # 9531KB, gb 137152
+gg_cs_arena              # 1319KB, gb 134331
+gg_mansion               # 1626KB, gb 135672
+gg_village               # 3047KB, gb 137317
+gg_simpsons              # 2332KB, gb 124110
+
+# ---- Classic aim_ / fy_ small-arena maps - the traditional gun game staples ----
+aim_ag_texture2          # 1131KB, gb 105436
+aim_ag_texture_city      # 1744KB, gb 105548
+aim_ak-colt              # 2293KB, gb 105872
+aim_map                  # 1241KB, gb 107959
+fy_iceworld              # 2272KB, gb 112832
+fy_snow                  # 884KB, gb 114321
+fy_dust                  # 2083KB, gb 112223

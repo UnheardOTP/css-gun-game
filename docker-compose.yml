@@ -1,0 +1,38 @@
+services:
+  css:
+    build:
+      context: .
+      args:
+        INSTALL_GAME: "1"      # bake the game into the image; set 0 to download on first start instead
+        PUID: "${PUID:-1000}"  # match your host user so ./maps and ./config stay writable
+        PGID: "${PGID:-1000}"
+    image: css-gungame:latest
+    container_name: css-gungame
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${SRCDS_PORT:-27015}:${SRCDS_PORT:-27015}/udp"
+      - "${SRCDS_PORT:-27015}:${SRCDS_PORT:-27015}/tcp"   # rcon
+    volumes:
+      - css-data:/home/steam/css          # game install + logs + SourceMod runtime data
+      - ./config:/config                  # YOUR settings; mirrors cstrike/ and is overlaid on every start
+      - ./maps:/maps                      # drop .bsp / .bsp.bz2 here, or list names in maps/maps.txt
+      - ./custom:/home/steam/css/cstrike/custom/user   # extra models/materials/sounds (optional)
+      - ./fastdl:/fastdl                  # compressed maps for the optional FastDL web server
+
+  # Optional: web server so players download maps fast. Enable with:  docker compose --profile fastdl up -d
+  fastdl:
+    image: nginx:alpine
+    profiles: ["fastdl"]
+    restart: unless-stopped
+    ports:
+      - "${FASTDL_PORT:-8080}:80"
+    volumes:
+      - ./fastdl:/usr/share/nginx/html:ro
+
+volumes:
+  css-data:
