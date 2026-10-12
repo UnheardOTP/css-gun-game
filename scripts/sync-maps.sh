@@ -62,9 +62,10 @@ log "${#CUSTOM[@]} custom map(s) installed"
 # --- 3. mapcycle ----------------------------------------------------------------
 if [ "${AUTO_MAPCYCLE:-1}" = "1" ] && [ ! -f /config/cfg/mapcycle.txt ]; then
     {
-        printf '%s\n' "${CUSTOM[@]}" | sort -u | grep -v '^$' || true
+        [ "${#CUSTOM[@]}" -gt 0 ] && { printf '%s\n' "${CUSTOM[@]}" | sort -u; }
         if [ "${INCLUDE_STOCK_MAPS:-1}" = "1" ]; then
-            for m in ${STOCK_MAPS:-}; do [ -f "$CSTRIKE/maps/$m.bsp" ] && echo "$m"; done
+            # stock maps live inside the game's .vpk archives, so there is no .bsp file to test for
+            for m in ${STOCK_MAPS:-}; do echo "$m"; done
         fi
     } > "$CSTRIKE/cfg/mapcycle.txt"
     log "generated mapcycle with $(wc -l < "$CSTRIKE/cfg/mapcycle.txt") maps (put your own at config/cfg/mapcycle.txt to override)"

@@ -26,6 +26,9 @@ SCRIPTS=/home/steam/scripts
 : "${ENABLE_SM_PLUGINS:=mapchooser rockthevote nominations}"  # stock SourceMod plugins to enable (from plugins/disabled)
 : "${MAPS_BASE_URL:=https://main.fastdl.me/maps}"
 
+# sync-maps.sh runs as a child process and needs these
+export AUTO_MAPCYCLE FETCH_MAPS INCLUDE_STOCK_MAPS STOCK_MAPS MAPS_BASE_URL
+
 log() { echo "[entrypoint] $*"; }
 
 # --- 1. game update ---------------------------------------------------------
@@ -93,7 +96,8 @@ fi
 
 # --- 5. launch ---------------------------------------------------------------
 if [ -z "$SRCDS_STARTMAP" ]; then
-    SRCDS_STARTMAP=$(grep -v '^\s*\(//\|$\)' "$CSTRIKE/cfg/mapcycle.txt" | head -n1 | awk '{print $1}')
+    # first map of the mapcycle; "|| true" because grep exits 1 on an empty cycle and we run with set -e/pipefail
+    SRCDS_STARTMAP=$(grep -v '^\s*\(//\|$\)' "$CSTRIKE/cfg/mapcycle.txt" 2>/dev/null | head -n1 | awk '{print $1}' || true)
     SRCDS_STARTMAP=${SRCDS_STARTMAP:-de_dust2}
 fi
 cd "$SERVER_DIR"
