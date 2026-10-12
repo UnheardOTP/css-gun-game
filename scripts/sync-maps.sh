@@ -13,6 +13,11 @@ log() { echo "[maps] $*"; }
 mkdir -p "$CSTRIKE/maps" "$CSTRIKE/cfg"
 [ -d "$MAPS_SRC" ] || { log "no /maps mount, skipping custom maps"; MAPS_SRC=$(mktemp -d); }
 
+# First run: seed the (empty) /maps folder with the default map list so there is something to download.
+if [ -d "$MAPS_SRC" ] && [ ! -f "$MAPS_SRC/maps.txt" ] && [ -f /home/steam/default-maps/maps.txt ]; then
+    cp /home/steam/default-maps/maps.txt "$MAPS_SRC/maps.txt" && log "seeded $MAPS_SRC/maps.txt with the default map list"
+fi
+
 is_bsp() { [ "$(head -c4 "$1" 2>/dev/null)" = "VBSP" ]; }
 
 # --- 1. download what maps.txt asks for -----------------------------------------

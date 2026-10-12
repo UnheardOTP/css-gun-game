@@ -82,6 +82,7 @@ COPY --from=plugins --chown=steam:steam /build/gungame/sound/ /home/steam/overla
 COPY --from=plugins /build/gungame.version /home/steam/overlay/gungame.version
 COPY --chown=steam:steam scripts/ /home/steam/scripts/
 COPY --chown=steam:steam config/ /home/steam/default-config/
+COPY --chown=steam:steam maps/maps.txt /home/steam/default-maps/maps.txt
 RUN chmod +x /home/steam/scripts/*.sh
 
 WORKDIR ${SERVER_DIR}
