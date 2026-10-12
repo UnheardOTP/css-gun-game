@@ -33,11 +33,23 @@ if [ "$SRCDS_AUTO_UPDATE" = "1" ] || [ ! -f "$SERVER_DIR/srcds_run" ]; then
     log "Updating Counter-Strike: Source dedicated server (app 232330)..."
     validate=""; [ "$SRCDS_VALIDATE" = "1" ] && validate="validate"
     for i in 1 2 3; do
-        "$STEAMCMD_DIR/steamcmd.sh" +force_install_dir "$SERVER_DIR" +login anonymous +app_update 232330 $validate +quit && break
-        log "steamcmd attempt $i failed"; sleep 5
+        "$STEAMCMD_DIR/steamcmd.sh" +force_install_dir "$SERVER_DIR" +login anonymous +app_update 232330 $validate +quit
+        [ -f "$SERVER_DIR/srcds_run" ] && break
+        log "srcds_run not found after steamcmd attempt $i; retrying with validate"; validate="validate"; sleep 5
     done
 fi
-[ -f "$SERVER_DIR/srcds_run" ] || { log "ERROR: server is not installed"; exit 1; }
+if [ ! -f "$SERVER_DIR/srcds_run" ]; then
+    log "ERROR: server is not installed ($SERVER_DIR/srcds_run is missing)."
+    log "Running as: $(id)"
+    log "Mount: $(stat -f -c '%T' "$SERVER_DIR" 2>&1)  owner: $(stat -c '%U:%G %a' "$SERVER_DIR" 2>&1)"
+    log "Free space: $(df -h "$SERVER_DIR" | tail -n1)"
+    log "Contents of $SERVER_DIR:"; ls -la "$SERVER_DIR" | head -30
+    log "Contents of $SERVER_DIR/steamapps:"; ls -la "$SERVER_DIR/steamapps" 2>&1 | head -20
+    found=$(find "$SERVER_DIR" -maxdepth 4 -name srcds_run 2>/dev/null | head -3)
+    log "srcds_run found elsewhere: ${found:-nowhere}"
+    log "Tip: on Unraid use a direct path such as /mnt/cache/appdata/... instead of /mnt/user/... for the game folder."
+    exit 1
+fi
 
 # steamclient.so for the Steam API
 mkdir -p "$HOME/.steam/sdk32"
