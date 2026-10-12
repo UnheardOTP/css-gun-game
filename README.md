@@ -39,11 +39,11 @@ Server console: `docker attach css-gungame` (detach with `Ctrl-p Ctrl-q`).
 - **Easiest:** drop a `.bsp` or `.bsp.bz2` into `maps/` and restart. It is installed and added to the mapcycle automatically.
 - **By name:** add a line to `maps/maps.txt` (`mapname`, or `mapname https://direct/url.bsp.bz2`); missing ones are downloaded on start (default source: [fastdl.me](https://fastdl.me), which mirrors GameBanana maps).
 - **Extra content** (models, materials, sounds a map needs): put it in `custom/` (mounted as `cstrike/custom/user`).
-- Mapcycle is regenerated from `maps/` (+ stock maps) unless `config/cfg/mapcycle.txt` exists.
+- Mapcycle is regenerated from `maps/` unless `config/cfg/mapcycle.txt` exists.
 - Players download maps from the game server by default, which is slow. For fast transfers: `docker compose --profile fastdl up -d`, then set `SRCDS_FASTDL_URL=http://<host>:8080` in `.env` and restart.
 
 ### Starter set (`maps/maps.txt`, 23 maps)
-16 `gg_` maps (`gg_sandstorm`, `gg_dust2`, `gg_snow`, `gg_bunker`, `gg_apollo`, `gg_underpass`, `gg_temple`, `gg_lego`, `gg_office`, `gg_crossfire`, `gg_tunnel`, `gg_trainstation`, `gg_cs_arena`, `gg_mansion`, `gg_village`, `gg_simpsons`) plus classic small arenas (`aim_ag_texture2`, `aim_ag_texture_city`, `aim_ak-colt`, `aim_map`, `fy_iceworld`, `fy_snow`, `fy_dust`), then the stock CS:S maps (GunGame runs on those too).
+16 `gg_` maps (`gg_sandstorm`, `gg_dust2`, `gg_snow`, `gg_bunker`, `gg_apollo`, `gg_underpass`, `gg_temple`, `gg_lego`, `gg_office`, `gg_crossfire`, `gg_tunnel`, `gg_trainstation`, `gg_cs_arena`, `gg_mansion`, `gg_village`, `gg_simpsons`) plus classic small arenas (`aim_ag_texture2`, `aim_ag_texture_city`, `aim_ak-colt`, `aim_map`, `fy_iceworld`, `fy_snow`, `fy_dust`), The stock CS:S maps are **not** in the rotation by default (set `INCLUDE_STOCK_MAPS=1` to add them); they are used only if `maps/` is empty, so the mapcycle is never empty.
 
 How they were picked: valid BSP, at least ~15 spawns per team, small download (≤ ~9 MB), and each one **loaded on the running server** during testing. Candidates that failed were dropped (`gg_island` crashes srcds; `gg_complex` has no CT spawns). **They have not been playtested with players** — judge layout quality yourself and comment out duds with `#`. Map credits are on GameBanana (the id is next to each entry).
 

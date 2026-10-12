@@ -21,7 +21,7 @@ SCRIPTS=/home/steam/scripts
 : "${SRCDS_EXTRA_ARGS:=}"
 : "${AUTO_MAPCYCLE:=1}"            # 1 = build cfg/mapcycle.txt from maps (unless config/cfg/mapcycle.txt exists)
 : "${FETCH_MAPS:=1}"               # 1 = download maps listed in maps/maps.txt that are missing
-: "${INCLUDE_STOCK_MAPS:=1}"       # 1 = stock CS:S maps are added to the generated mapcycle
+: "${INCLUDE_STOCK_MAPS:=0}"       # 1 = always add stock CS:S maps to the generated mapcycle (they are used anyway if there are no custom maps)
 : "${STOCK_MAPS:=cs_italy cs_office cs_assault cs_militia de_dust2 de_dust de_aztec de_inferno de_nuke de_train de_cbble de_prodigy de_piranesi}"
 : "${ENABLE_SM_PLUGINS:=mapchooser rockthevote nominations}"  # stock SourceMod plugins to enable (from plugins/disabled)
 : "${MAPS_BASE_URL:=https://main.fastdl.me/maps}"

@@ -63,7 +63,8 @@ log "${#CUSTOM[@]} custom map(s) installed"
 if [ "${AUTO_MAPCYCLE:-1}" = "1" ] && [ ! -f /config/cfg/mapcycle.txt ]; then
     {
         [ "${#CUSTOM[@]}" -gt 0 ] && { printf '%s\n' "${CUSTOM[@]}" | sort -u; }
-        if [ "${INCLUDE_STOCK_MAPS:-1}" = "1" ]; then
+        # stock maps are only added on request, or as a fallback so the cycle is never empty
+        if [ "${INCLUDE_STOCK_MAPS:-0}" = "1" ] || [ "${#CUSTOM[@]}" -eq 0 ]; then
             # stock maps live inside the game's .vpk archives, so there is no .bsp file to test for
             for m in ${STOCK_MAPS:-}; do echo "$m"; done
         fi
