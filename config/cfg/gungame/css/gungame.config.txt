@@ -617,10 +617,10 @@
         "BotsCanWinGame" "0"
 
         /* Allow level up by killing a bot with knife */
-        "AllowLevelUpByKnifeBot" "0"
+        "AllowLevelUpByKnifeBot" "1"
 
         /* Allow level up by killing a bot with hegrenade */
-        "AllowLevelUpByExplodeBot" "0"
+        "AllowLevelUpByExplodeBot" "1"
 
         /* Allow level up by killing a bot with knife if there is no other human */
         "AllowLevelUpByKnifeBotIfNoHuman" "1"
