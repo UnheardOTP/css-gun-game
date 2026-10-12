@@ -1,11 +1,11 @@
 /**
- * GunGame FFA helper for CS:S
+ * GunGame auto-team helper for CS:S (file/plugin name kept as gg_ffa for compatibility)
  *
- * Counter-Strike: Source has no free-for-all mode, so this plugin makes a team-less gun game:
+ * Makes the server feel like a classic gun game instead of a round-based CS match:
  *  - hides the team / class menus and auto-assigns joiners to the smaller team
  *  - respawns players shortly after they die (no waiting for the round to end)
  *  - gives a short spawn protection
- * Pair it with mp_friendlyfire 1 (server.cfg) and "FFA" "1" (gungame.config.txt) so everybody is an enemy.
+ * It does not touch friendly fire: that stays in server.cfg (mp_friendlyfire).
  *
  * ConVars (written to cfg/sourcemod/gg_ffa.cfg on first run):
  *   sm_ggffa_enabled           1     master switch
@@ -21,7 +21,7 @@
 
 public Plugin myinfo =
 {
-    name        = "GunGame FFA helper",
+    name        = "GunGame auto-team helper",
     author      = "css-gun-game",
     description = "No team selection, auto respawn and spawn protection for gun game on CS:S",
     version     = "1.0.0",

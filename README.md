@@ -35,11 +35,11 @@ Server console: `docker attach css-gungame` (detach with `Ctrl-p Ctrl-q`).
 
 `config/` **mirrors `cstrike/`** — every file in it is copied over the server on each container start, so you can also drop in any other file (e.g. `config/addons/sourcemod/configs/maplists.cfg`, extra `.smx` plugins under `config/addons/sourcemod/plugins/`). Apply changes with `docker compose restart`.
 
-## Free-for-all (no team selection)
+## Teams, respawn and CS:S extras
 
-CS:S has no real FFA mode, so this setup fakes one: the team and class menus are hidden, joiners are auto-assigned to the smaller team, dead players respawn after ~2 s, and friendly fire is on with GunGame's `"FFA" "1"`, so everybody can shoot everybody and every kill counts. The `gg_ffa` plugin (`src/gg_ffa.sp`) does the join/respawn part; rounds never end on their own (`mp_ignore_round_win_conditions 1`). Note that **bots never shoot their own team**, so with bots you effectively get T vs CT among bots.
+CS:S cannot drop teams completely, so this setup hides them as far as possible: the team and class menus are hidden, joiners are auto-assigned to the smaller team, dead players respawn after ~2 s with a short spawn protection, and rounds never end on their own (`mp_ignore_round_win_conditions 1`). **Friendly fire is off**, so it is T vs CT. The `gg_ffa` plugin (`src/gg_ffa.sp`, settings in `config/cfg/sourcemod/gg_ffa.cfg`) does the join/respawn part. `server.cfg` also turns off the regular CS:S extras: team-kill punishment and kicks, bot voice/radio chatter and the "Fire in the hole" radio.
 
-To go back to classic team-based gun game: `sm_ggffa_enabled "0"` in `config/cfg/sourcemod/gg_ffa.cfg`, `mp_friendlyfire 0` in `server.cfg`, and `"FFA" "0"` in `gungame.config.txt`. Any extra `.sp` you drop into `src/` is compiled into the image on the next build.
+`TurboMode "1"` in `gungame.config.txt` hands you the next weapon the moment you get a kill; with `"0"` you only get it when you respawn. Set `sm_ggffa_enabled "0"` to bring the normal team menu back. Any extra `.sp` you drop into `src/` is compiled into the image on the next build.
 
 ## Adding maps
 

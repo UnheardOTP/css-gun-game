@@ -185,7 +185,7 @@
         "MaxLevelPerRound" "0"
 
         /* Turbo Mode: give next level weapon on level up */
-        "TurboMode" "0"
+        "TurboMode" "1"
 
         /* Knife Elite force them to only have a knife after they level up.
            They will get a normal weapon again next round */
@@ -218,7 +218,7 @@
          * 0 - Disabled
          * 1 - Enabled
          */
-        "FFA" "1"
+        "FFA" "0"
 
         /** 
          * Enable friendly fire on defined level.
