@@ -47,6 +47,19 @@ Server console: `docker attach css-gungame` (detach with `Ctrl-p Ctrl-q`).
 
 How they were picked: valid BSP, at least ~15 spawns per team, small download (≤ ~9 MB), and each one **loaded on the running server** during testing. Candidates that failed were dropped (`gg_island` crashes srcds; `gg_complex` has no CT spawns). **They have not been playtested with players** — judge layout quality yourself and comment out duds with `#`. Map credits are on GameBanana (the id is next to each entry).
 
+## Prebuilt image (GHCR)
+
+GitHub Actions (`.github/workflows/publish.yml`) builds and pushes `ghcr.io/<owner>/<repo>` on every push to `main`, weekly (from scratch, to pick up new game/Metamod/SourceMod builds), and on demand. Tags: `latest`, short commit sha, and the build date.
+
+On the server you only need `docker-compose.ghcr.yml`, `.env`, `config/` and `maps/`:
+
+```bash
+echo 'CSS_IMAGE=ghcr.io/<owner>/<repo>:latest' >> .env
+docker compose -f docker-compose.ghcr.yml pull
+docker compose -f docker-compose.ghcr.yml up -d
+```
+New GHCR packages are private by default: either make the package public (repo → Packages → Package settings) or `docker login ghcr.io` on the server with a token that has `read:packages`.
+
 ## Updating
 
 ```bash

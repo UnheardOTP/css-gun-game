@@ -1,0 +1,35 @@
+# Run the prebuilt image from GHCR (no build on the server).
+#   export CSS_IMAGE=ghcr.io/<owner>/<repo>:latest     (or put CSS_IMAGE=... in .env)
+#   docker compose -f docker-compose.ghcr.yml pull && docker compose -f docker-compose.ghcr.yml up -d
+# If the package is private: docker login ghcr.io -u <user>   (token needs read:packages)
+services:
+  css:
+    image: ${CSS_IMAGE:?set CSS_IMAGE, e.g. ghcr.io/<owner>/<repo>:latest}
+    container_name: css-gungame
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${SRCDS_PORT:-27015}:${SRCDS_PORT:-27015}/udp"
+      - "${SRCDS_PORT:-27015}:${SRCDS_PORT:-27015}/tcp"   # rcon
+    volumes:
+      - css-data:/home/steam/css
+      - ./config:/config
+      - ./maps:/maps
+      - ./custom:/home/steam/css/cstrike/custom/user
+      - ./fastdl:/fastdl
+
+  fastdl:
+    image: nginx:alpine
+    profiles: ["fastdl"]
+    restart: unless-stopped
+    ports:
+      - "${FASTDL_PORT:-8080}:80"
+    volumes:
+      - ./fastdl:/usr/share/nginx/html:ro
+
+volumes:
+  css-data:
