@@ -33,6 +33,15 @@ RUN set -eux; \
         $SP/spcomp -i$SP/include -iinclude "$p.sp" -o"/out/plugins/$p.smx" | tail -n 3; \
         test -s "/out/plugins/$p.smx"; \
     done
+# Our own plugins (src/*.sp) are compiled the same way; drop another .sp into src/ and rebuild to add it.
+COPY src/ /build/src/
+RUN set -eux; \
+    SP=/build/addons/sourcemod/scripting; \
+    for f in /build/src/*.sp; do \
+        p="$(basename "$f" .sp)"; \
+        $SP/spcomp -i$SP/include "$f" -o"/out/plugins/$p.smx" | tail -n 5; \
+        test -s "/out/plugins/$p.smx"; \
+    done
 
 ############################ 2) runtime ############################
 FROM debian:bookworm-slim

@@ -29,10 +29,17 @@ Server console: `docker attach css-gungame` (detach with `Ctrl-p Ctrl-q`).
 | **Weapon ladder** (order / kills per level) | `config/cfg/gungame/css/gungame.equip.txt` |
 | Commands run when GunGame is active / warmup start+end | `config/cfg/gungame/css/gungame.mapconfig.cfg`, `gungame.warmupstart.cfg`, `gungame.warmupend.cfg` |
 | Per-map or per-prefix GunGame settings | `config/cfg/gungame/maps/<map or prefix>.config.txt` (see upstream `doc/faq/map_prefixes_config.txt`) |
+| **Free-for-all / team behaviour** (no team menu, respawn delay, spawn protection) | `config/cfg/sourcemod/gg_ffa.cfg` |
 | Admins | `config/addons/sourcemod/configs/admins_simple.ini` |
 | Map rotation | automatic (see below), or create `config/cfg/mapcycle.txt` |
 
 `config/` **mirrors `cstrike/`** — every file in it is copied over the server on each container start, so you can also drop in any other file (e.g. `config/addons/sourcemod/configs/maplists.cfg`, extra `.smx` plugins under `config/addons/sourcemod/plugins/`). Apply changes with `docker compose restart`.
+
+## Free-for-all (no team selection)
+
+CS:S has no real FFA mode, so this setup fakes one: the team and class menus are hidden, joiners are auto-assigned to the smaller team, dead players respawn after ~2 s, and friendly fire is on with GunGame's `"FFA" "1"`, so everybody can shoot everybody and every kill counts. The `gg_ffa` plugin (`src/gg_ffa.sp`) does the join/respawn part; rounds never end on their own (`mp_ignore_round_win_conditions 1`). Note that **bots never shoot their own team**, so with bots you effectively get T vs CT among bots.
+
+To go back to classic team-based gun game: `sm_ggffa_enabled "0"` in `config/cfg/sourcemod/gg_ffa.cfg`, `mp_friendlyfire 0` in `server.cfg`, and `"FFA" "0"` in `gungame.config.txt`. Any extra `.sp` you drop into `src/` is compiled into the image on the next build.
 
 ## Adding maps
 
