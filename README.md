@@ -41,6 +41,12 @@ CS:S cannot drop teams completely, so this setup hides them as far as possible: 
 
 `TurboMode "1"` in `gungame.config.txt` hands you the next weapon the moment you get a kill; with `"0"` you only get it when you respawn. Set `sm_ggffa_enabled "0"` to bring the normal team menu back. Any extra `.sp` you drop into `src/` is compiled into the image on the next build.
 
+## Ending a game, and bots
+
+- **Game end.** After somebody wins GunGame the stock game just starts another round, so `gg_ffa` ends the match itself: 12 s after a win (`sm_ggffa_end_delay`) it changes to the next map (the voted one if a vote ran). Admins can do the same with `sm_ggffa_endmap`.
+- **Bots on custom maps.** Bots need a navigation file (`<map>.nav`). Most custom gun game maps do not ship one, so the first time you add a bot on such a map CS:S generates it and then **changes to the next map** (bot quota is reset to 0). The `.nav` is saved in the game volume, so it only happens once per map; add the bots again afterwards.
+- Bot protection: knife and grenade kills on bots count (`AllowLevelUpByKnifeBot` / `AllowLevelUpByExplodeBot` = 1) but bots cannot win (`BotsCanWinGame` = 0).
+
 ## Adding maps
 
 - **Easiest:** drop a `.bsp` or `.bsp.bz2` into `maps/` and restart. It is installed and added to the mapcycle automatically.

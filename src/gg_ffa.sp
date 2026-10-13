@@ -11,6 +11,9 @@
  *   sm_ggffa_enabled           1     master switch
  *   sm_ggffa_respawn_delay     2.0   seconds before a dead player respawns (0 = off)
  *   sm_ggffa_spawn_protection  2.0   seconds of invulnerability after spawning (0 = off)
+ *   sm_ggffa_end_delay         12.0  seconds after a GunGame win before the map changes (0 = leave it to the game)
+ *
+ * Admin command: sm_ggffa_endmap  changes to the next map right away (same as what happens after a win).
  */
 #pragma semicolon 1
 #pragma newdecls required
@@ -31,6 +34,7 @@ public Plugin myinfo =
 ConVar g_cvEnabled;
 ConVar g_cvRespawnDelay;
 ConVar g_cvProtection;
+ConVar g_cvEndDelay;
 
 bool g_bWantsSpec[MAXPLAYERS + 1];
 int  g_iAssignTries[MAXPLAYERS + 1];
@@ -40,7 +44,10 @@ public void OnPluginStart()
     g_cvEnabled      = CreateConVar("sm_ggffa_enabled", "1", "Enable the GunGame FFA helper", _, true, 0.0, true, 1.0);
     g_cvRespawnDelay = CreateConVar("sm_ggffa_respawn_delay", "2.0", "Seconds before a dead player respawns (0 = disabled)", _, true, 0.0, true, 30.0);
     g_cvProtection   = CreateConVar("sm_ggffa_spawn_protection", "2.0", "Seconds of spawn protection (0 = disabled)", _, true, 0.0, true, 10.0);
+    g_cvEndDelay     = CreateConVar("sm_ggffa_end_delay", "12.0", "Seconds after a GunGame win before changing to the next map (0 = disabled)", _, true, 0.0, true, 120.0);
     AutoExecConfig(true, "gg_ffa");
+
+    RegAdminCmd("sm_ggffa_endmap", Cmd_EndMap, ADMFLAG_CHANGEMAP, "Change to the next map now");
 
     HookEvent("player_spawn", Event_PlayerSpawn);
     HookEvent("player_death", Event_PlayerDeath);
@@ -197,4 +204,42 @@ public Action Timer_EndProtection(Handle timer, int userid)
         SetEntProp(client, Prop_Data, "m_takedamage", 2, 1);
     }
     return Plugin_Stop;
+}
+
+// The game does not end the match on its own after a GunGame win (the next round just starts),
+// so end it here. Called by gungame.smx when somebody wins.
+public void GG_OnWinner(int client, const char[] weapon, int victim)
+{
+    float delay = g_cvEndDelay.FloatValue;
+    if (!g_cvEnabled.BoolValue || delay <= 0.0)
+    {
+        return;
+    }
+
+    CreateTimer(delay, Timer_EndMap, _, TIMER_FLAG_NO_MAPCHANGE);
+}
+
+public Action Timer_EndMap(Handle timer)
+{
+    ChangeToNextMap();
+    return Plugin_Stop;
+}
+
+public Action Cmd_EndMap(int client, int args)
+{
+    ReplyToCommand(client, "[GG] Changing map...");
+    ChangeToNextMap();
+    return Plugin_Handled;
+}
+
+void ChangeToNextMap()
+{
+    char next[PLATFORM_MAX_PATH];
+    if (!GetNextMap(next, sizeof(next)) || !IsMapValid(next))
+    {
+        // no usable next map: reload the current one so the game still starts fresh
+        GetCurrentMap(next, sizeof(next));
+    }
+    LogMessage("Changing map to %s after a GunGame win", next);
+    ForceChangeLevel(next, "GunGame winner");
 }
